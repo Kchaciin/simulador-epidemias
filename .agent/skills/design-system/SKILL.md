@@ -1,5 +1,5 @@
 ---
-description: Sistema de diseño completo del simulador - paleta, tipografía, componentes, espaciado, animaciones. Estilo inspirado en interfaces de Linux/macOS con estética dark premium.
+description: Sistema de diseño completo del simulador - paleta, tipografía, componentes, espaciado, animaciones. Estilo inspirado en interfaces de Linux/macOS con estética dark premium. Incluye principios de diseño intencional anti-genérico para evitar estética de 'IA genérica'.
 ---
 
 # Design System — Simulador de Epidemias
@@ -11,6 +11,36 @@ El simulador debe verse como un **centro de control epidemiológico de alta tecn
 **Palabras clave del diseño:** Minimalista. Oscuro. Elegante. Inmersivo. Tecnológico. Silencioso.
 
 **NO hacer:** Bordes gruesos, colores chillones, sombras duras, fondos blancos, emojis en la UI, gradientes arcoíris, bordes redondeados excesivos, Comic Sans.
+
+---
+
+## Design Thinking (proceso antes de codear)
+
+Antes de implementar cualquier componente o vista, responder mentalmente:
+
+1. **Propósito:** ¿Qué problema resuelve esta interfaz? ¿Quién la opera?
+   - *Respuesta para este proyecto:* Un dashboard de monitoreo epidemiológico para 4 investigadores universitarios que necesitan control total sobre una simulación compleja.
+
+2. **Tono:** El tono ya está definido — **dark premium refinado**. No experimentar con tonos opuestos. Ejecutar este tono con precisión quirúrgica.
+
+3. **Diferenciación:** ¿Qué hace esta interfaz **inolvidable**? La densidad controlada de información sobre un mapa oscuro con agentes vivos genera una sensación de "mission control" que impresiona desde el primer vistazo.
+
+4. **Intencionalidad:** Cada decisión de diseño debe ser **deliberada**. No aceptar defaults del framework — cada color, tamaño, spacing y animación debe estar tomado de este design system.
+
+### Principio anti-genérico
+
+**PROHIBIDO** producir diseño que se vea como "output de IA genérica". Señales de alerta:
+- Usar paletas predecibles (gradientes morados sobre blanco)
+- Layouts simétricos sin personalidad
+- Colores distribuidos equitativamente sin dominancia
+- Elementos que podrían pertenecer a cualquier app genérica
+
+**EN CAMBIO**, este simulador tiene una identidad visual agresivamente específica:
+- Fondo void `#06060a` con capas de profundidad
+- Glassmorphism **sutil** (apenas perceptible)
+- Tipografía con propósito: JetBrains Mono para números, Inter para texto
+- Colores epidemiológicos vibrantes sobre oscuridad profunda
+- Sensación de estar dentro de un terminal profesional
 
 ---
 
@@ -359,6 +389,50 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 ---
 
+## Composición espacial y atmósfera
+
+### Principios de composición
+
+- **Densidad controlada:** La información debe ser densa pero organizada. Inspiración: Grafana, NASA Mission Control. NUNCA dejar grandes áreas vacías sin propósito.
+- **Jerarquía por tamaño y luminosidad:** Los datos más importantes (infectados, R₀) son más grandes y más brillantes. Los secundarios más pequeños y desaturados.
+- **Negativo espacio intencional:** El espacio entre paneles y cards no es "vacío" — es una decisión de respiración visual. Usar el sistema de spacing (múltiplos de 4px) rigurosamente.
+
+### Atmósfera visual
+
+El fondo no es simplemente "negro". Crear profundidad ambiental:
+
+- **Capas de profundidad**: Del `--bg-void` más profundo al `--bg-hover` más cercano, cada capa indica nivel de interacción.
+- **Bordes luminosos sutiles**: `rgba(255, 255, 255, 0.06)` — apenas visibles, crean separación sin "cortar" visualmente.
+- **Glow contextual**: Los contadores y badges usan un glow sutil del color semántico correspondiente (rojo para infectados, verde para susceptibles). El glow dice "esto es importante" sin texto extra.
+- **Profundidad de sombras**: Las cards usan `box-shadow` con `rgba(0,0,0,0.4)` — sombra profunda pero no dura. Esto las "despega" del fondo sin efecto cartoon.
+
+### Fondos de paneles (transparencia con carácter)
+
+```css
+/* Panel nivel 1 — sidebar, header */
+.panel-l1 {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Panel nivel 2 — card dentro de sidebar */
+.panel-l2 {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Panel nivel 3 — tooltip, popup flotante */
+.panel-l3 {
+    background: rgba(17, 17, 24, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-dropdown);
+}
+```
+
+---
+
 ## Animaciones
 
 ### Principios
@@ -367,6 +441,19 @@ input[type="range"]::-webkit-slider-thumb:hover {
 2. **Usa `cubic-bezier` para rebotes sutiles**, no `linear`.
 3. **Solo anima `transform` y `opacity`** — nunca `width`, `height` ni `top/left` (causan reflow).
 4. **Los contadores usan transición numérica**, no aparecen de golpe.
+5. **Momentos de alto impacto:** Un reveal escalonado bien orquestado al cargar (stagger de panels con `animation-delay`) genera más impacto que 20 micro-animaciones dispersas.
+6. **Hover estados que sorprenden:** Los botones no solo cambian color — hacen un `translateY(-1px)` + glow sutil. Pequeño pero memorable.
+
+### Filosofía de motion
+
+| Situación | Animación correcta | Anti-patrón |
+|---|---|---|
+| Carga inicial del dashboard | Stagger de paneles: fade-in escalonado 50ms entre cada uno | Todo aparece de golpe |
+| Cambio de valor numérico | Transición suave del número anterior al nuevo | Número parpadea |
+| Hover en botón | `translateY(-1px)` + glow sutil + cambio de color | Solo cambia background-color |
+| Panel se expande | `transform: scaleY()` desde el borde superior | Cambia `height` (reflow) |
+| Tick de simulación | Contadores actualizan con ease-out suave | Valores saltan instantáneamente |
+| Alerta epidemiológica | Pulse sutil + glow del color de alerta | Flash agresivo que distrae |
 
 ### Transiciones base
 
@@ -377,7 +464,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 ```
 
-### Fade in de elementos
+### Fade in de elementos (con stagger)
 
 ```css
 @keyframes fadeIn {
@@ -388,6 +475,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .animate-in {
     animation: fadeIn 0.3s var(--transition-smooth) forwards;
 }
+
+/* Stagger para carga inicial del dashboard */
+.sidebar .card:nth-child(1) { animation-delay: 0ms; }
+.sidebar .card:nth-child(2) { animation-delay: 50ms; }
+.sidebar .card:nth-child(3) { animation-delay: 100ms; }
+.sidebar .card:nth-child(4) { animation-delay: 150ms; }
+.sidebar .card:nth-child(5) { animation-delay: 200ms; }
 ```
 
 ### Pulse para agentes infectados graves
@@ -520,6 +614,8 @@ El diseño debe evocar estas interfaces:
 
 ## Anti-patrones (NUNCA hacer)
 
+### Anti-patrones visuales
+
 | No hacer | Hacer en su lugar |
 |---|---|
 | Fondo blanco o gris claro | Fondo `#0a0a0f` siempre |
@@ -532,3 +628,16 @@ El diseño debe evocar estas interfaces:
 | Animaciones de más de 300ms | Transiciones rápidas, 150–300ms máximo |
 | `font-size` menor a 10px | Mínimo 10px para legibilidad |
 | Espaciado inconsistente | Siempre múltiplos de 4px |
+
+### Anti-patrones de estética IA genérica ("AI Slop")
+
+| Señal de "AI slop" | Lo que hacemos nosotros |
+|---|---|
+| Gradientes morados/azules sobre fondo blanco | Fondo void `#06060a`, acentos indigo `#6366f1` controlados |
+| Inter/Roboto/Arial como única fuente | Inter para texto + JetBrains Mono para datos — dualidad con propósito |
+| Layout genérico que podría ser cualquier app | Layout de "mission control" con mapa central y sidebar de datos |
+| Colores distribuidos equitativamente | Color dominante oscuro, acentos semánticos epidemiológicos vibrantes |
+| Bordes redondeados exagerados (pill buttons) | Radios contenidos: 6-16px máximo, excepto toggles |
+| Cards sin personalidad | Glassmorphism KDE/macOS con blur sutil y bordes luminosos |
+| Componentes de librería sin customizar | Cada componente sigue nuestros tokens explícitamente |
+| Todo el texto del mismo tamaño y color | Jerarquía agresiva: 28px mono para valores, 10px uppercase para labels |
