@@ -8,6 +8,9 @@
  * Cada nodo tiene: id, nombre, tipo, coordenadas, capacidad, propiedades
  */
 export const NODES = [
+    // ============================================
+    // Nodos residenciales (4) — Spawn de agentes
+    // ============================================
     {
         id: 'res_norte',
         name: 'Urb. La Fuente / Sta. Rosa',
@@ -16,7 +19,8 @@ export const NODES = [
         lng: -68.7400,
         capacity: 30,
         is_closed: true,
-        has_water: true,
+        has_water: true,           // Cauchos y pipotes — criadero potencial
+        has_ventilation: false,
         radius_m: 200
     },
     {
@@ -27,95 +31,116 @@ export const NODES = [
         lng: -68.7430,
         capacity: 30,
         is_closed: true,
-        has_water: true,
+        has_water: true,           // Recipientes abandonados
+        has_ventilation: false,
         radius_m: 200
     },
     {
         id: 'res_este',
-        name: 'Urb. San José',
+        name: 'Urb. El Pedregal',
         type: 'residential',
-        lat: 10.3390,
-        lng: -68.7350,
-        capacity: 30,
+        lat: 10.3400,
+        lng: -68.7340,
+        capacity: 25,
         is_closed: true,
-        has_water: true,
-        radius_m: 200
+        has_water: false,
+        has_ventilation: false,
+        radius_m: 180
     },
     {
         id: 'res_oeste',
-        name: 'Barrio Yurubí',
+        name: 'Sector La Independencia',
         type: 'residential',
-        lat: 10.3400,
-        lng: -68.7500,
-        capacity: 30,
+        lat: 10.3380,
+        lng: -68.7530,
+        capacity: 25,
         is_closed: true,
-        has_water: true,
+        has_water: true,           // Vegetación y cunetas
+        has_ventilation: false,
         radius_m: 200
     },
+
+    // ============================================
+    // Nodos educativos y laborales (3)
+    // ============================================
     {
         id: 'uney',
-        name: 'UNEY',
+        name: 'UNEY (Universidad)',
         type: 'educational',
-        lat: 10.3440,
-        lng: -68.7370,
-        capacity: 60,
+        lat: 10.3182,
+        lng: -68.7473,
+        capacity: 40,
         is_closed: true,
         has_water: false,
+        has_ventilation: false,    // Aulas sin A/C
         radius_m: 150
     },
     {
         id: 'gobernacion',
         name: 'Gobernación de Yaracuy',
         type: 'labor',
-        lat: 10.3410,
-        lng: -68.7440,
-        capacity: 40,
+        lat: 10.3403,
+        lng: -68.7358,
+        capacity: 20,
         is_closed: true,
         has_water: false,
-        radius_m: 100
+        has_ventilation: false,
+        radius_m: 80
     },
     {
         id: 'mercado',
         name: 'Mercado Municipal',
         type: 'public',
-        lat: 10.3380,
-        lng: -68.7420,
-        capacity: 50,
-        is_closed: false,
-        has_water: true,
+        lat: 10.3300,
+        lng: -68.7468,
+        capacity: 35,
+        is_closed: false,          // Espacio abierto/semi-abierto
+        has_water: true,           // Drenajes y desagües — criadero
+        has_ventilation: false,
+        radius_m: 100
+    },
+
+    // ============================================
+    // Nodos de servicios (2)
+    // ============================================
+    {
+        id: 'hospital',
+        name: 'Hospital Central Dr. Plácido Rodríguez',
+        type: 'health',
+        lat: 10.3553,
+        lng: -68.7517,
+        capacity: 15,
+        is_closed: true,
+        has_water: false,
+        has_ventilation: true,     // ✅ ÚNICO nodo con ventilación → K_vent = 0.40
         radius_m: 120
     },
     {
         id: 'plaza',
-        name: 'Plaza Bolívar',
+        name: 'Plaza Bolívar de San Felipe',
         type: 'public',
-        lat: 10.3395,
-        lng: -68.7435,
-        capacity: 40,
-        is_closed: false,
-        has_water: false,
+        lat: 10.3403,
+        lng: -68.7358,
+        capacity: 50,
+        is_closed: false,          // Espacio abierto
+        has_water: true,           // Fuente y macetas — criadero
+        has_ventilation: false,
         radius_m: 80
     },
-    {
-        id: 'hospital',
-        name: 'Hospital Central',
-        type: 'health',
-        lat: 10.3360,
-        lng: -68.7460,
-        capacity: 30,
-        is_closed: true,
-        has_water: false,
-        radius_m: 100
-    },
+
+    // ============================================
+    // Nodo de tránsito (1)
+    // ============================================
     {
         id: 'terminal',
         name: 'Terminal de Pasajeros',
         type: 'transit',
-        lat: 10.3350,
-        lng: -68.7380,
-        capacity: 50,
-        is_closed: false,
-        has_water: true,
+        lat: 10.3233,
+        lng: -68.7503,
+        capacity: 20,
+        is_closed: true,
+        has_water: false,
+        has_ventilation: false,
         radius_m: 100
     }
 ];
