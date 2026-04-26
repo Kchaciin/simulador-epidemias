@@ -194,8 +194,8 @@ export class Simulation {
         this._intervalId = setInterval(() => this._runTick(), intervalMs);
     }
 
-    _runTick() {
-        if (!this.running) return;
+    _runTick(forced = false) {
+        if (!this.running && !forced) return;
 
         // 1 — Avanzar reloj
         this.hour++;

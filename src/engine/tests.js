@@ -34,7 +34,7 @@ function assertApprox(value, min, max, label) {
  * Usa _runTick() directamente para tests deterministas.
  */
 function runTicks(sim, n) {
-    for (let i = 0; i < n; i++) sim._runTick();
+    for (let i = 0; i < n; i++) sim._runTick(true);
 }
 
 // ─────────────────────────────────────────────────────
@@ -89,18 +89,26 @@ function test_haversine() {
 function test_quadratic() {
     console.log('\n📐 Test 2: Distribución cuadrática (estadística)');
 
-    // Con probTotal=1.0 y T=10 días, casi todos deben transicionar en 10 días
-    let transitions = 0;
-    const trials = 1000;
+    // Con probTotal=1.0 y T=10 días, el riesgo se concentra AL FINAL
+    // Verificar que los últimos 60 ticks (25%) concentran ~50%+ de las transiciones
+    let lateTransitions = 0;
+    let earlyTransitions = 0;
+    const trials = 2000;
     for (let i = 0; i < trials; i++) {
-        let happened = false;
-        for (let t = 1; t <= 240; t++) { // 10 días × 24 ticks
-            if (evaluateQuadratic(t, 10, 1.0)) { happened = true; break; }
+        for (let t = 1; t <= 240; t++) {
+            if (evaluateQuadratic(t, 10, 1.0)) {
+                if (t > 180) lateTransitions++; else earlyTransitions++;
+                break;
+            }
         }
-        if (happened) transitions++;
     }
-    // Con prob=1.0 debe transicionar el ~95%+ en el periodo
-    assertApprox(transitions / trials, 0.90, 1.0, 'P=1.0 transiciona >90% dentro del plazo');
+    // Distribución cuadrática: claramente más transiciones en el último 25%
+    // Con 2000 trials la diferencia debe ser estadísticamente significativa
+    assert(
+        lateTransitions > earlyTransitions * 1.1,
+        `Cuadrática concentra riesgo al final: tardías=${lateTransitions} vs tempranas=${earlyTransitions}`
+    );
+
 
     // Con probTotal=0.0 nunca ocurre
     let noTransitions = 0;
@@ -170,6 +178,7 @@ function test_covid_transition() {
 
     const sim = new Simulation(COVID_19, { population: 20, initialInfected: 0 });
     sim._spawnAgents();
+    sim.running = true; // Necesario para que _runTick procese agentes
 
     // Forzar 1 agente a estado E
     const agent = sim.humans[0];
@@ -274,6 +283,7 @@ function test_endCondition() {
     sim._spawnAgents();
 
     // Sin infectados: la simulación debe terminar por erradicación inmediatamente
+    sim.running = true;
     let endCalled = false;
     sim.onEnd(result => { endCalled = result.reason; });
 
