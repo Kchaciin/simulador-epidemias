@@ -89,23 +89,25 @@ function test_haversine() {
 function test_quadratic() {
     console.log('\n📐 Test 2: Distribución cuadrática (estadística)');
 
-    // Con probTotal=1.0 y T=10 días, el riesgo se concentra AL FINAL
-    // Verificar que los últimos 60 ticks (25%) concentran ~50%+ de las transiciones
+    // Con probTotal=1.0 y T=10 días (240 ticks), la cuadrática concentra
+    // transiciones AL FINAL. Partimos al 50% del periodo (tick 120):
+    //   ∫₀^0.5T = (0.5)³ = 12.5% temprano
+    //   ∫₀.₅T^T = 87.5% tardío
+    // Con 2000 trials la señal es abrumadora
     let lateTransitions = 0;
     let earlyTransitions = 0;
     const trials = 2000;
     for (let i = 0; i < trials; i++) {
         for (let t = 1; t <= 240; t++) {
             if (evaluateQuadratic(t, 10, 1.0)) {
-                if (t > 180) lateTransitions++; else earlyTransitions++;
+                if (t > 120) lateTransitions++; else earlyTransitions++;
                 break;
             }
         }
     }
-    // Distribución cuadrática: claramente más transiciones en el último 25%
-    // Con 2000 trials la diferencia debe ser estadísticamente significativa
+    // Con el corte al 50%, lateTransitions debe ser ~7× mayor que earlyTransitions
     assert(
-        lateTransitions > earlyTransitions * 1.1,
+        lateTransitions > earlyTransitions * 2,
         `Cuadrática concentra riesgo al final: tardías=${lateTransitions} vs tempranas=${earlyTransitions}`
     );
 

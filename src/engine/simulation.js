@@ -66,6 +66,7 @@ export class Simulation {
 
         // --- Timeline de eventos (Feature: Timeline) ---
         this.events = [];
+        this._firstInfectedEmitted = false;
 
         // --- Callbacks ---
         this._onTick = null;
@@ -281,7 +282,11 @@ export class Simulation {
                         h.changeState('I', this.tick);
                         h.isGrave = Math.random() < (cfg.p_grave ?? 0.20);
                         this._infectedAt.set(h.id, this.tick);
-                        if (h.ticksInState === incTicks) this._emitEvent('Primer infectado');
+                        // Evento: primer infectado sintomático
+                        if (!this._firstInfectedEmitted) {
+                            this._emitEvent('Primer infectado sintomático');
+                            this._firstInfectedEmitted = true;
+                        }
                     }
                 }
                 break;
@@ -297,16 +302,19 @@ export class Simulation {
 
             case 'I': {
                 const dRec = cfg.d_rec ?? 14;
-                // I → D: distribución cuadrática
+                // I → D: distribución cuadrática (alpha = prob. total de muerte)
                 if (evaluateQuadratic(h.ticksInState, dRec, cfg.alpha ?? 0.02)) {
                     h.changeState('D', this.tick);
                     break;
                 }
                 // I → R: distribución cuadrática
-                if (evaluateQuadratic(h.ticksInState, dRec, 1 - (cfg.alpha ?? 0.02))) {
+                // Prob. total de recuperación = 1.0 (certeza eventual)
+                // La cuadrática distribuye CUÁNDO ocurre, concentrando al final
+                // Solo evalúa si no murió este tick (ya hizo break arriba)
+                if (evaluateQuadratic(h.ticksInState, dRec, 1.0)) {
                     h.changeState('R', this.tick);
                     this._trackContagios(h);
-                    // TB: 40% de R vuelven a S
+                    // TB: 40% de R vuelven a S (inmunidad parcial)
                     if (cfg.model === 'SEIRL_D' && Math.random() < (cfg.p_reinfection ?? 0.40)) {
                         h.changeState('S', this.tick);
                     }
@@ -315,8 +323,9 @@ export class Simulation {
             }
 
             case 'I1': {
-                // FA Fase aguda → bifurcación exactamente en tick 96
-                if (h.ticksInState === (cfg.d_acute ?? 4) * 24) {
+                // FA Fase aguda → bifurcación al completar d_acute días
+                // Usa >= porque ticksInState ya se incrementó antes de llegar aquí
+                if (h.ticksInState >= (cfg.d_acute ?? 4) * 24) {
                     if (Math.random() < (cfg.p_acute_to_r ?? 0.85)) {
                         h.changeState('R', this.tick);
                     } else {
@@ -327,11 +336,11 @@ export class Simulation {
             }
 
             case 'I2': {
-                // FA Fase tóxica
+                // FA Fase tóxica — muerte o recuperación con distribución cuadrática
                 const dTox = cfg.d_toxic ?? 8;
                 if (evaluateQuadratic(h.ticksInState, dTox, cfg.alpha_toxic ?? 0.50)) {
                     h.changeState('D', this.tick);
-                } else if (evaluateQuadratic(h.ticksInState, dTox, 1 - (cfg.alpha_toxic ?? 0.50))) {
+                } else if (evaluateQuadratic(h.ticksInState, dTox, 1.0)) {
                     h.changeState('R', this.tick);
                 }
                 break;
