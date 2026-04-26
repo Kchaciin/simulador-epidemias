@@ -12,7 +12,8 @@ import { AGENT_DISTRIBUTION, SPEEDS } from '../config/routines.js';
 import {
     evaluateAirborneContagion,
     evaluateVectorContagion,
-    evaluateQuadratic
+    evaluateQuadratic,
+    haversineMeters
 } from './collision.js';
 
 let _agentIdCounter = 0;
@@ -250,8 +251,13 @@ export class Simulation {
                 const destNode = NODES.find(n => n.id === destination);
                 if (destNode) {
                     const speed = h.getSpeed(this.config); // km/h
-                    // Estimación simple de ticks: 1 tick = 1h → velocidad ≈ ticks para 1km
-                    const ticks = Math.max(1, Math.round(1 / speed));
+                    // Distancia real en km usando Haversine
+                    const distKm = haversineMeters(
+                        h.position.lat, h.position.lng,
+                        destNode.lat, destNode.lng
+                    ) / 1000;
+                    // Ticks = distancia / velocidad (1 tick = 1 hora)
+                    const ticks = Math.max(1, Math.round(distKm / speed));
                     h.startTransit(destNode, ticks);
                 }
             }
@@ -273,13 +279,17 @@ export class Simulation {
         switch (h.state) {
             case 'E': {
                 // E → I: determinista al tick d_inc × 24
-                const incTicks = (cfg.d_inc ?? 5) * 24;
+                // Dengue usa d_inc_h, resto usa d_inc
+                const incDays = cfg.d_inc_h ?? cfg.d_inc ?? 5;
+                const incTicks = incDays * 24;
                 if (h.ticksInState >= incTicks) {
                     // TB: 90% → L, 10% → I activo
                     if (cfg.model === 'SEIRL_D' && Math.random() < (cfg.f_latente ?? 0.90)) {
                         h.changeState('L', this.tick);
                     } else {
-                        h.changeState('I', this.tick);
+                        // FA usa I1 (fase aguda), el resto usa I
+                        const infState = cfg.model === 'SIRD_V_BIFURCATION' ? 'I1' : 'I';
+                        h.changeState(infState, this.tick);
                         h.isGrave = Math.random() < (cfg.p_grave ?? 0.20);
                         this._infectedAt.set(h.id, this.tick);
                         // Evento: primer infectado sintomático
@@ -393,8 +403,8 @@ export class Simulation {
                 aliveHumans, this.mosquitoes, this.config, this.tick
             );
             for (const { susceptible, mosquito } of humanContagions) {
-                const newState = this.config.model === 'SIRD_V_BIFURCATION' ? 'E' : 'E';
-                susceptible.changeState(newState, this.tick);
+                // Fiebre Amarilla entra en E (incubación) → luego bifurca en I1
+                susceptible.changeState('E', this.tick);
                 this._recentContagions.push({ tick: this.tick });
             }
             for (const { susceptible: mosq } of mosquitoContagions) {
@@ -447,10 +457,13 @@ export class Simulation {
     // ─────────────────────────────────────────
 
     _evaluateDOTS(h) {
-        const phases = this.config.treatment?.alpha_phases
-            ?? [{ max_tick: 720, factor: 0.70 }, { max_tick: 2160, factor: 0.40 }, { max_tick: 4320, factor: 0.10 }];
+        const phases = this.config.treatment?.alpha_reduction_phases
+            ?? this.config.treatment?.alpha_phases
+            ?? [{ until_tick: 720, factor: 0.70 }, { until_tick: 2160, factor: 0.40 }, { until_tick: 4320, factor: 0.10 }];
 
-        const phase = phases.find(p => h.treatmentTicks <= p.max_tick) ?? phases[phases.length - 1];
+        // Soportar tanto 'max_tick' (treatments.js) como 'until_tick' (diseases.js)
+        const phase = phases.find(p => h.treatmentTicks <= (p.max_tick ?? p.until_tick))
+            ?? phases[phases.length - 1];
         const alphaReduced = (this.config.alpha ?? 0.15) * phase.factor;
 
         // Reevaluar muerte con alpha reducido
