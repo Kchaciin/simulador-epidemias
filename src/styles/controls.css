@@ -1,2 +1,117 @@
-/* Estilos de Controles — Jorge Ordoñez */
-/* TODO: Implementar estilos de botones, sliders, toggles */
+/* ============================================
+   Estilos de Controles — Jorge Ordoñez
+   ============================================ */
+
+/* --- Botones de Intervención --- */
+.interventions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+}
+
+.btn-intervention {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    justify-content: flex-start;
+}
+
+.btn-intervention:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.btn-intervention:active {
+    transform: translateY(0);
+}
+
+/* Estados Activos por Tipo */
+.btn-intervention.active.type-vaccine {
+    background: rgba(167, 139, 250, 0.1);
+    border-color: var(--color-v);
+    color: var(--color-v);
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.15);
+}
+
+.btn-intervention.active.type-quarantine {
+    background: rgba(250, 204, 21, 0.1);
+    border-color: var(--color-e);
+    color: var(--color-e);
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.15);
+}
+
+.btn-intervention.active.type-mask {
+    background: rgba(56, 189, 248, 0.1);
+    border-color: var(--color-r);
+    color: var(--color-r);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+.btn-intervention.active.type-fumigate {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--color-i);
+    color: var(--color-i);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+/* --- Panel Footer (Controles de Reproducción) --- */
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border-subtle);
+    padding: 0 var(--space-4);
+    z-index: 10;
+}
+
+.speed-controls {
+    display: flex;
+    background: rgba(0,0,0,0.3);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-default);
+    padding: 2px;
+}
+
+.btn-speed {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-speed:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.05);
+}
+
+.btn-speed.active {
+    background: var(--action-primary);
+    color: white;
+    box-shadow: var(--glow-primary);
+}
+
+.btn-speed.active.fast {
+    background: var(--color-i);
+    box-shadow: var(--glow-danger);
+}
