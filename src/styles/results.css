@@ -1,0 +1,160 @@
+/* ============================================
+   Estilos de Innovación y Resultados (Timeline y Modal)
+   Responsable: Jorge Ordoñez
+   ============================================ */
+
+/* --- Timeline de Eventos --- */
+.timeline-overlay {
+    position: absolute;
+    bottom: var(--space-4);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(17, 17, 24, 0.85); /* --bg-elevated con opacidad */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2) var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    box-shadow: var(--shadow-dropdown);
+    z-index: 5;
+    max-width: 80%;
+    overflow-x: auto;
+    scrollbar-width: none; /* Ocultar scroll en Firefox */
+}
+
+.timeline-overlay::-webkit-scrollbar {
+    display: none; /* Ocultar scroll en Chrome */
+}
+
+.timeline-event {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+    opacity: 0.8;
+    transition: opacity var(--transition-fast);
+}
+
+.timeline-event:hover {
+    opacity: 1;
+}
+
+.timeline-day {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-accent);
+}
+
+.timeline-label {
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+.timeline-separator {
+    color: var(--border-strong);
+}
+
+/* --- Pantalla de Resultados (Overlay) --- */
+.results-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(6, 6, 10, 0.85); /* --bg-void con mucha opacidad */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.results-modal {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.results-header {
+    text-align: center;
+}
+
+.results-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: var(--space-2);
+    background: linear-gradient(135deg, #e4e4e7, #a1a1aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.results-subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+}
+
+.result-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-default);
+}
+
+.result-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-2);
+}
+
+.result-value {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.result-sublabel {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+}
+
+.results-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
