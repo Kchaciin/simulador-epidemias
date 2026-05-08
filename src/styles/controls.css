@@ -67,6 +67,27 @@
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
 }
 
+.btn-intervention.active.type-vector {
+    background: rgba(56, 189, 248, 0.1);
+    border-color: var(--color-r);
+    color: var(--color-r);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+.btn-intervention.active.type-treatment {
+    background: rgba(74, 222, 128, 0.1);
+    border-color: var(--color-s);
+    color: var(--color-s);
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.15);
+}
+
+.btn-intervention.active.type-research {
+    background: rgba(250, 204, 21, 0.1);
+    border-color: var(--color-e);
+    color: var(--color-e);
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.15);
+}
+
 /* --- Panel Footer (Controles de Reproducción) --- */
 .footer {
     display: flex;
