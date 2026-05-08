@@ -15,7 +15,9 @@ export class Dashboard {
             i: document.getElementById('counter-i-val'),
             r: document.getElementById('counter-r-val'),
             d: document.getElementById('counter-d-val'),
-            v: document.getElementById('counter-v-val')
+            v: document.getElementById('counter-v-val'),
+            l: document.getElementById('counter-l-val'),
+            m: document.getElementById('counter-m-val')
         };
         
         this.segments = {
@@ -36,7 +38,12 @@ export class Dashboard {
             <div class="card animate-in">
                 <div class="card-header">
                     <h2 class="card-title">Población Global</h2>
-                    <span class="text-xs font-mono" id="sim-time">Día 0 | 00:00</span>
+                    <div style="text-align: right;">
+                        <div class="text-xs font-mono" id="sim-time">Día 0 | 00:00</div>
+                        <div class="text-xs font-mono" style="color: var(--text-muted); margin-top: 2px;">
+                            <span id="sim-temp">28°C</span> 🌡️ | <span id="sim-hum">65%</span> 💧
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="counters-grid">
@@ -63,6 +70,14 @@ export class Dashboard {
                     <div class="counter">
                         <span class="counter-value text-v" id="counter-v-val">0</span>
                         <span class="counter-label">Vacunados</span>
+                    </div>
+                    <div class="counter" id="counter-l" style="display:none; border-color: rgba(250, 204, 21, 0.2);">
+                        <span class="counter-value text-e" id="counter-l-val">0</span>
+                        <span class="counter-label">Latentes</span>
+                    </div>
+                    <div class="counter" id="counter-m" style="display:none; border-color: rgba(239, 68, 68, 0.2);">
+                        <span class="counter-value" id="counter-m-val" style="color: var(--color-i)">0</span>
+                        <span class="counter-label">Mosquitos</span>
                     </div>
                 </div>
 
@@ -113,6 +128,8 @@ export class Dashboard {
         this.counters.r.textContent = stats.R;
         this.counters.d.textContent = stats.D;
         this.counters.v.textContent = stats.V;
+        if(stats.L !== undefined) this.counters.l.textContent = stats.L;
+        if(stats.M !== undefined) this.counters.m.textContent = stats.M;
 
         // Actualizar barra de proporción
         const total = stats.S + stats.E + stats.I + stats.R + stats.D + stats.V;
@@ -139,5 +156,13 @@ export class Dashboard {
     showResults(finalStats) {
         // TODO: Mostrar métricas de resumen
         console.log("Simulación finalizada", finalStats);
+    }
+
+    setDiseaseMode(disease) {
+        const counterL = document.getElementById('counter-l');
+        const counterM = document.getElementById('counter-m');
+        
+        if (counterL) counterL.style.display = (disease === 'TB') ? 'flex' : 'none';
+        if (counterM) counterM.style.display = (disease === 'DENGUE' || disease === 'YELLOW_FEVER') ? 'flex' : 'none';
     }
 }

@@ -1,2 +1,49 @@
-/* Animaciones - Jorge Ordoñez */
-/* TODO: fadeIn, pulse, rain, transiciones */
+/* ============================================
+   Animaciones — Jorge Ordoñez
+   ============================================ */
+
+/* --- Fade In (Staggered) --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+    opacity: 0; /* Empieza oculto */
+    animation: fadeIn 0.4s var(--transition-smooth) forwards;
+}
+
+/* Stagger para carga inicial del dashboard */
+.sidebar > *:nth-child(1) { animation-delay: 50ms; }
+.sidebar > *:nth-child(2) { animation-delay: 100ms; }
+.sidebar > *:nth-child(3) { animation-delay: 150ms; }
+.sidebar > *:nth-child(4) { animation-delay: 200ms; }
+.sidebar > *:nth-child(5) { animation-delay: 250ms; }
+.sidebar > *:nth-child(6) { animation-delay: 300ms; }
+.sidebar > *:nth-child(7) { animation-delay: 350ms; }
+.sidebar > *:nth-child(8) { animation-delay: 400ms; }
+
+/* --- Pulse (Peligro / Alert) --- */
+@keyframes pulse-danger {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+.pulse-alert {
+    animation: pulse-danger 2s infinite;
+}
+
+/* --- Efecto de lluvia (Partículas en el mapa) --- */
+@keyframes rain {
+    from { transform: translateY(-10px); opacity: 0.6; }
+    to { transform: translateY(100vh); opacity: 0; }
+}
+
+.rain-particle {
+    position: absolute;
+    width: 1px;
+    height: 12px;
+    background: rgba(96, 165, 250, 0.3);
+    animation: rain 0.8s linear infinite;
+    pointer-events: none;
+}

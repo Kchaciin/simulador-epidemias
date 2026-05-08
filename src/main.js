@@ -46,6 +46,27 @@ const resultsScreen = new ResultsScreen('results-screen');
 
 console.log('⚡ Dashboard inicializado con datos mockeados');
 
+// Inyectar selector de enfermedad para pruebas
+const diseaseSelect = document.createElement('select');
+diseaseSelect.className = 'btn-intervention';
+diseaseSelect.style.marginBottom = 'var(--space-2)';
+diseaseSelect.style.width = '100%';
+diseaseSelect.style.backgroundColor = 'rgba(167, 139, 250, 0.15)'; // Color distintivo (violeta tenue)
+diseaseSelect.style.borderColor = 'var(--color-v)';
+diseaseSelect.style.color = '#fff';
+diseaseSelect.innerHTML = `
+    <option value="COVID-19">🦠 COVID-19</option>
+    <option value="DENGUE">🦟 Dengue</option>
+    <option value="YELLOW_FEVER">🦟 Fiebre Amarilla</option>
+    <option value="TB">🫁 Tuberculosis</option>
+`;
+document.getElementById('interventions-container').parentNode.insertBefore(diseaseSelect, document.getElementById('interventions-container'));
+
+diseaseSelect.addEventListener('change', (e) => {
+    controls.setDiseaseMode(e.target.value);
+    dashboard.setDiseaseMode(e.target.value);
+});
+
 // Inyectar botón de prueba para terminar simulación en el panel de intervenciones
 const finishBtn = document.createElement('button');
 finishBtn.className = 'btn-intervention'; // Usar la misma clase que los otros botones
@@ -67,6 +88,7 @@ setTimeout(() => {
 let mockTick = 0;
 let mockStats = {
     S: 290, E: 5, I: 5, R: 0, D: 0, V: 0,
+    L: 12, M: 450, // Datos condicionales para probar
     R0: 2.5,
     tick: 0
 };
