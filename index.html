@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simulador de epidemias basado en agentes para San Felipe, Yaracuy. Motor SIR/SEIR con mapa real y dashboard en tiempo real.">
+    <title>Simulador de Epidemias — Yaracuy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/styles/index.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Setup Screen (se oculta al iniciar la simulación) -->
+        <div id="setup-screen"></div>
+
+        <!-- App Layout (mapa + dashboard) -->
+        <div id="simulation-screen" class="app-layout" style="display: none;">
+            <header class="header" id="header"></header>
+            <main class="map-container" id="map-container">
+                <div id="map"></div>
+                <canvas id="agent-canvas"></canvas>
+            </main>
+            <aside class="sidebar" id="sidebar"></aside>
+            <footer class="footer" id="footer"></footer>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" style="display: none;"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

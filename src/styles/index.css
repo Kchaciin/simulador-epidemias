@@ -1,0 +1,121 @@
+/* ============================================
+   Design System — Simulador de Epidemias
+   Variables globales, reset, tipografía
+   ============================================ */
+
+/* --- Paleta de colores --- */
+:root {
+    /* Fondos (capas de profundidad) */
+    --bg-void: #06060a;
+    --bg-primary: #0a0a0f;
+    --bg-elevated: #111118;
+    --bg-surface: #16161f;
+    --bg-hover: #1c1c28;
+
+    /* Bordes */
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-default: rgba(255, 255, 255, 0.10);
+    --border-strong: rgba(255, 255, 255, 0.16);
+
+    /* Texto */
+    --text-primary: #e4e4e7;
+    --text-secondary: #a1a1aa;
+    --text-muted: #52525b;
+    --text-accent: #818cf8;
+
+    /* Estados epidemiológicos */
+    --color-s: #4ade80;
+    --color-e: #facc15;
+    --color-i: #ef4444;
+    --color-i-grave: #b91c1c;
+    --color-r: #38bdf8;
+    --color-d: #71717a;
+    --color-v: #a78bfa;
+
+    /* Acciones */
+    --action-primary: #6366f1;
+    --action-primary-hover: #818cf8;
+    --action-success: #22c55e;
+    --action-danger: #ef4444;
+    --action-warning: #f59e0b;
+    --action-neutral: #64748b;
+
+    /* Sombras y glow */
+    --glow-primary: 0 0 20px rgba(99, 102, 241, 0.15);
+    --glow-success: 0 0 20px rgba(34, 197, 94, 0.15);
+    --glow-danger: 0 0 20px rgba(239, 68, 68, 0.15);
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow-dropdown: 0 8px 32px rgba(0, 0, 0, 0.6);
+
+    /* Tipografía */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+
+    /* Espaciado */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Border radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Transiciones */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.2s ease;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Scrollbar global --- */
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: var(--radius-full);
+}
+
+/* --- Utilidades --- */
+.font-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.text-s { color: var(--color-s); }
+.text-e { color: var(--color-e); }
+.text-i { color: var(--color-i); }
+.text-r { color: var(--color-r); }
+.text-d { color: var(--color-d); }
+.text-v { color: var(--color-v); }
